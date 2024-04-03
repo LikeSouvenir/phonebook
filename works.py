@@ -1,4 +1,5 @@
 import json
+import easygui as eg
 
 # проверяет данные, если файла нет, создает его со стандартными значениями
 def load():
@@ -23,10 +24,13 @@ def saveIfEnd():
 
 # вывод всех контактов
 def all():
+    allContact = ''
     for name, value in phonebook.items():
-        print("\n",name)
+        allContact += "\n" + name
         for key, somePos in value.items():
-            print(key.ljust(15), *somePos)
+            allContact += '\n' + key.ljust(15)+ str(somePos).replace('[', '').replace(']', ' ')
+    eg.msgbox(msg = allContact, title='Контакты')
+            
             
 # поиск номеров по имени 
 def find_number(name):
@@ -83,40 +87,38 @@ def delete_contact(name):
 # подгуржаются файлы с телефона
 phonebook = load()
 while True:
-    print('Что вы хотите сделать?\n')
-    user_choice = input('\
-1 - Посмотреть контакты\n\
-2 - Найти контакт\n\
-3 - Добавить контакт\n\
-4 - Изменить контакт\n\
-5 - Удалить контакт\n\
-0 - Выйти из приложения\n')
-    print()
-    if user_choice == '1':
+    user_choice = eg.integerbox(title = 'Что вы хотите сделать?', msg='\
+        1 - Посмотреть контакты\n\
+        2 - Найти контакт\n\
+        3 - Добавить контакт\n\
+        4 - Изменить контакт\n\
+        5 - Удалить контакт\n\
+        0 - Выйти из приложения',
+        lowerbound = 0, upperbound = 5)
+    if user_choice == 1:
         all()
-    elif user_choice == '2':
+    elif user_choice == 2:
         name = input("Введите искомое имя: ")
         find_number(name)
-    elif user_choice == '3':
+    elif user_choice == 3:
         name = input("Введите имя: ")
-        ph = input("Введите телефон: ")
+        ph = int(input("Введите телефон: "))
         bird = input("Введите день рождения: ")
         mail = input("Введите почту: ")
         add_phone_number(name, ph,bird,mail)
         pass
-    elif user_choice == '4':
+    elif user_choice == 4:
         name = input("Введите имя: ")
         change_contact(name)
         pass
-    elif user_choice == '5':
+    elif user_choice == 5:
         name = input("Введите имя: ")
         delete_contact(name)
         pass
-    elif user_choice == '0':
+    elif user_choice == 0:
         saveIfEnd()
-        print('До свидания!')
+        eg.msgbox(msg="До свидания!")
         break
     else:
-        print('Неправильно выбрана команда!')
-        print()
+        eg.msgbox(msg="Неправильно выбрана команда!")
         continue
