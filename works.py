@@ -53,31 +53,37 @@ def add_phone_number():
     eg.msgbox(msg = name + "\n" + str(pos).replace('[', '').replace(']', '').replace("'", "") + "\nКонтакт добавлен.",
               title='Добавление контакта')
     
-# изменение контакта
-def change_contact(name):
+def change_contact():
+    name = eg.textbox(title= "Изменение контакта", msg="Введите имя: ")
     if name not in phonebook:
-        print("Такого контакта нет")
+        eg.msgbox(msg = f'Контакт {name} не найден', title='Изменение контакта')
         return
-    print('Что вы хотите поменять?\n (Вводите через пробел)\n')
-    user_change = (input('1 - Телефон\n2 - День рождения\n3 - Email\n')).split()
-    for i in set(user_change):
-        if i == "1":
-            ph = [(input(f"Введите новый номер телефонa, если несколько, то через ' , ': ")).split(',')]
-        else:
-            ph = phonebook.get(name).get("Телефон")
-        if i == "2":
-            dr = input(f"Введите новую дату дня рождения: ")
-        else:
-            dr = phonebook.get(name).get("День рождения")
-        if i == "3":
-            mail = input(f"Введите новую почту: ")
-        else:
-            mail = phonebook.get(name).get("Email")
-        phonebook[name] =  {
+    ph = mail = dr = None
+    while(True):
+        user_change = eg.buttonbox(msg = str(phonebook.get(name)).replace('[', '').replace(']', ' ').replace("'", ""),
+            title="Изменение контакта",
+            choices=('Телефон', 'День рождения','Email', 'Закончить'))
+        if user_change == "Телефон":
+            ph = eg.textbox(title= "Изменение контакта", msg="Введите телефон (если несколько, то через пробел): ")
+            ph = ph.split()
+        if user_change == "День рождения":
+            dr = eg.textbox(title= "Изменение контакта", msg="Введите день рождения: ")
+        if user_change == "Email":
+            dr = eg.textbox(title= "Изменение контакта", msg="Введите Email: ")
+        if user_change == "Закончить":
+            break
+    if ph == None:
+        ph = phonebook.get(name).get("Телефон")
+    if dr == None:
+        dr = phonebook.get(name).get("День рождения")
+    if mail == None:
+        mail = phonebook.get(name).get("Email") 
+    phonebook[name] =  {
                 "Телефон" : ph,
                 "Email" : mail,
                 "День рождения" : dr}
-    print("Изменения внесены")
+    eg.msgbox(msg = name + "\n" + str(phonebook.get(name)).replace('[', '').replace(']', '').replace("'", "") + "\nКонтакт изменен.",
+              title='Изменение контакта')
     return phonebook
     
 # удаление контакта
