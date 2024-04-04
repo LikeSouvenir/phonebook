@@ -1,4 +1,5 @@
 import json
+import easygui as eg
 
 # проверяет данные, если файла нет, создает его со стандартными значениями
 def load():
@@ -23,100 +24,106 @@ def saveIfEnd():
 
 # вывод всех контактов
 def all():
+    allContact = ''
     for name, value in phonebook.items():
-        print("\n",name)
+        allContact += "\n" + name
         for key, somePos in value.items():
-            print(key.ljust(15), *somePos)
+            allContact += '\n' + key.ljust(15)+ str(somePos).replace('[', '').replace(']', ' ')
+    eg.msgbox(msg = allContact, title='Контакты')
+            
             
 # поиск номеров по имени 
-def find_number(name):
-    try:
-        pos = phonebook.get(name)
-        ph = "".join(map(str, pos.get('Телефон')))
-        bird = pos.get('День рождения')
-        mail = pos.get('Email')
-        print(f"Контакт - {name}\nТелефон - {ph}\nДень рождения - {bird}\nEmail - {mail}")
-    except:
-        print("Контакт не найден")
+def find_number():
+    name = eg.textbox(title= "Поиск контакта", msg="Введите искомое имя: ")
+    pos = phonebook.get(name)
+    eg.msgbox(msg = name + "\n" + str(pos).replace('[', '').replace(']', '').replace("'", ""),
+              title='Поиск контакта')
 
 # добавление контакта
-def add_phone_number(name, ph ,bird ,mail):
+def add_phone_number():
+    name = eg.textbox(title= "Добавление контакта", msg="Введите имя: ")
+    ph = eg.textbox(title= "Добавление контакта", msg="Введите телефона (если несколько, то через пробел): ")
+    bird = eg.textbox(title= "Добавление контакта", msg="Введите день рождения: ")
+    mail = eg.textbox(title= "Добавление контакта", msg="Введите вфвыфEmail: ")
+    ph = ph.split()
     phonebook[name] =  {
 		'Телефон': [ph], 
         'День рождения': bird, 
         'Email': mail}
-    return phonebook
+    pos = phonebook.get(name)
+    eg.msgbox(msg = name + "\n" + str(pos).replace('[', '').replace(']', '').replace("'", "") + "\nКонтакт добавлен.",
+              title='Добавление контакта')
     
 # изменение контакта
-def change_contact(name):
+def change_contact():
+    name = eg.textbox(title= "Изменение контакта", msg="Введите имя: ")
     if name not in phonebook:
-        print("Такого контакта нет")
+        eg.msgbox(msg = f'Контакт {name} не найден', title='Изменение контакта')
         return
-    print('Что вы хотите поменять?\n (Вводите через пробел)\n')
-    user_change = (input('1 - Телефон\n2 - День рождения\n3 - Email\n')).split()
-    for i in set(user_change):
-        if i == "1":
-            ph = [(input(f"Введите новый номер телефонa, если несколько, то через ' , ': ")).split(',')]
-        else:
-            ph = phonebook.get(name).get("Телефон")
-        if i == "2":
-            dr = input(f"Введите новую дату дня рождения: ")
-        else:
-            dr = phonebook.get(name).get("День рождения")
-        if i == "3":
-            mail = input(f"Введите новую почту: ")
-        else:
-            mail = phonebook.get(name).get("Email")
-        phonebook[name] =  {
+    ph = mail = dr = None
+    while(True):
+        user_change = eg.buttonbox(msg = str(phonebook.get(name)).replace('[', '').replace(']', ' ').replace("'", ""),
+            title="Изменение контакта",
+            choices=('Телефон', 'День рождения','Email', 'Закончить'))
+        if user_change == "Телефон":
+            ph = eg.textbox(title= "Изменение контакта", msg="Введите телефон (если несколько, то через пробел): ")
+            ph = ph.split()
+        if user_change == "День рождения":
+            dr = eg.textbox(title= "Изменение контакта", msg="Введите день рождения: ")
+        if user_change == "Email":
+            dr = eg.textbox(title= "Изменение контакта", msg="Введите Email: ")
+        if user_change == "Закончить":
+            break
+    if ph == None:
+        ph = phonebook.get(name).get("Телефон")
+    if dr == None:
+        dr = phonebook.get(name).get("День рождения")
+    if mail == None:
+        mail = phonebook.get(name).get("Email") 
+    phonebook[name] =  {
                 "Телефон" : ph,
                 "Email" : mail,
                 "День рождения" : dr}
-    print("Изменения внесены")
-    return phonebook
+    eg.msgbox(msg = name + "\n" + str(phonebook.get(name)).replace('[', '').replace(']', '').replace("'", "") + "\nКонтакт изменен.",
+              title='Изменение контакта')
     
 # удаление контакта
-def delete_contact(name):
-    phonebook.pop(name, "Такого контакта нет")
-    print(f"Контакт {name} удален" if name not in phonebook else " ")
-    return phonebook
+def delete_contact():
+    name = eg.textbox(title= "Удаление контакта", msg="Введите имя: ")
+    if name not in phonebook:
+        eg.msgbox(title= "Удаление контакта", msg = f'Контакт {name} не найден')
+        return
+    phonebook.pop(name)
+    eg.msgbox(title= "Удаление контакта", msg = f'Контакт {name} удален')
 
 # подгуржаются файлы с телефона
 phonebook = load()
 while True:
-    print('Что вы хотите сделать?\n')
-    user_choice = input('\
-1 - Посмотреть контакты\n\
-2 - Найти контакт\n\
-3 - Добавить контакт\n\
-4 - Изменить контакт\n\
-5 - Удалить контакт\n\
-0 - Выйти из приложения\n')
-    print()
+    user_choice = eg.buttonbox(title = 'Что вы хотите сделать?', msg='\
+        1 - Посмотреть контакты\n\
+        2 - Найти контакт\n\
+        3 - Добавить контакт\n\
+        4 - Изменить контакт\n\
+        5 - Удалить контакт\n\
+        0 - Выйти из приложения',
+        choices=('1', '2', '3', '4', '5', '0'))
     if user_choice == '1':
         all()
     elif user_choice == '2':
-        name = input("Введите искомое имя: ")
-        find_number(name)
+        find_number()
     elif user_choice == '3':
-        name = input("Введите имя: ")
-        ph = input("Введите телефон: ")
-        bird = input("Введите день рождения: ")
-        mail = input("Введите почту: ")
-        add_phone_number(name, ph,bird,mail)
+        add_phone_number()
         pass
     elif user_choice == '4':
-        name = input("Введите имя: ")
-        change_contact(name)
+        change_contact()
         pass
     elif user_choice == '5':
-        name = input("Введите имя: ")
-        delete_contact(name)
+        delete_contact()
         pass
     elif user_choice == '0':
         saveIfEnd()
-        print('До свидания!')
+        eg.msgbox(msg="До свидания!")
         break
     else:
-        print('Неправильно выбрана команда!')
-        print()
+        eg.msgbox(msg="Неправильно выбрана команда!")
         continue
