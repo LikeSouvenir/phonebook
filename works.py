@@ -62,7 +62,7 @@ def change_contact():
         return
     ph = mail = dr = None
     while(True):
-        user_change = eg.buttonbox(msg = str(phonebook.get(name)).replace('[', '').replace(']', ' ').replace("'", ""),
+        user_change = eg.buttonbox(msg = name + "\n" + str(phonebook.get(name)).replace('[', '').replace(']', ' ').replace("'", ""),
             title="Изменение контакта",
             choices=('Телефон', 'День рождения','Email', 'Закончить'))
         if user_change == "Телефон":
