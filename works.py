@@ -39,12 +39,19 @@ def find_number():
     eg.msgbox(msg = str(pos).replace('[', '').replace(']', '').replace("'", ""),title='Поиск контакта')
 
 # добавление контакта
-def add_phone_number(name, ph ,bird ,mail):
+def add_phone_number():
+    name = eg.textbox(title= "Добавление контакта", msg="Введите имя: ")
+    ph = eg.textbox(title= "Добавление контакта", msg="Введите телефона (если несколько, то через пробел): ")
+    bird = eg.textbox(title= "Добавление контакта", msg="Введите день рождения: ")
+    mail = eg.textbox(title= "Добавление контакта", msg="Введите Email: ")
+    ph = ph.split()
     phonebook[name] =  {
 		'Телефон': [ph], 
         'День рождения': bird, 
         'Email': mail}
-    return phonebook
+    pos = phonebook.get(name)
+    eg.msgbox(msg = name + "\n" + str(pos).replace('[', '').replace(']', '').replace("'", "") + "\nКонтакт добавлен.",
+              title='Добавление контакта')
     
 # изменение контакта
 def change_contact(name):
@@ -95,19 +102,13 @@ while True:
     elif user_choice == 2:
         find_number()
     elif user_choice == 3:
-        name = input("Введите имя: ")
-        ph = int(input("Введите телефон: "))
-        bird = input("Введите день рождения: ")
-        mail = input("Введите почту: ")
-        add_phone_number(name, ph,bird,mail)
+        add_phone_number()
         pass
     elif user_choice == 4:
-        name = input("Введите имя: ")
-        change_contact(name)
+        change_contact()
         pass
     elif user_choice == 5:
-        name = input("Введите имя: ")
-        delete_contact(name)
+        delete_contact()
         pass
     elif user_choice == 0:
         saveIfEnd()
