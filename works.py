@@ -36,14 +36,15 @@ def all():
 def find_number():
     name = eg.textbox(title= "Поиск контакта", msg="Введите искомое имя: ")
     pos = phonebook.get(name)
-    eg.msgbox(msg = str(pos).replace('[', '').replace(']', '').replace("'", ""),title='Поиск контакта')
+    eg.msgbox(msg = name + "\n" + str(pos).replace('[', '').replace(']', '').replace("'", ""),
+              title='Поиск контакта')
 
 # добавление контакта
 def add_phone_number():
     name = eg.textbox(title= "Добавление контакта", msg="Введите имя: ")
     ph = eg.textbox(title= "Добавление контакта", msg="Введите телефона (если несколько, то через пробел): ")
     bird = eg.textbox(title= "Добавление контакта", msg="Введите день рождения: ")
-    mail = eg.textbox(title= "Добавление контакта", msg="Введите Email: ")
+    mail = eg.textbox(title= "Добавление контакта", msg="Введите вфвыфEmail: ")
     ph = ph.split()
     phonebook[name] =  {
 		'Телефон': [ph], 
@@ -53,6 +54,7 @@ def add_phone_number():
     eg.msgbox(msg = name + "\n" + str(pos).replace('[', '').replace(']', '').replace("'", "") + "\nКонтакт добавлен.",
               title='Добавление контакта')
     
+# изменение контакта
 def change_contact():
     name = eg.textbox(title= "Изменение контакта", msg="Введите имя: ")
     if name not in phonebook:
@@ -84,39 +86,41 @@ def change_contact():
                 "День рождения" : dr}
     eg.msgbox(msg = name + "\n" + str(phonebook.get(name)).replace('[', '').replace(']', '').replace("'", "") + "\nКонтакт изменен.",
               title='Изменение контакта')
-    return phonebook
     
 # удаление контакта
-def delete_contact(name):
-    phonebook.pop(name, "Такого контакта нет")
-    print(f"Контакт {name} удален" if name not in phonebook else " ")
-    return phonebook
+def delete_contact():
+    name = eg.textbox(title= "Удаление контакта", msg="Введите имя: ")
+    if name not in phonebook:
+        eg.msgbox(title= "Удаление контакта", msg = f'Контакт {name} не найден')
+        return
+    phonebook.pop(name)
+    eg.msgbox(title= "Удаление контакта", msg = f'Контакт {name} удален')
 
 # подгуржаются файлы с телефона
 phonebook = load()
 while True:
-    user_choice = eg.integerbox(title = 'Что вы хотите сделать?', msg='\
+    user_choice = eg.buttonbox(title = 'Что вы хотите сделать?', msg='\
         1 - Посмотреть контакты\n\
         2 - Найти контакт\n\
         3 - Добавить контакт\n\
         4 - Изменить контакт\n\
         5 - Удалить контакт\n\
         0 - Выйти из приложения',
-        lowerbound = 0, upperbound = 5)
-    if user_choice == 1:
+        choices=('1', '2', '3', '4', '5', '0'))
+    if user_choice == '1':
         all()
-    elif user_choice == 2:
+    elif user_choice == '2':
         find_number()
-    elif user_choice == 3:
+    elif user_choice == '3':
         add_phone_number()
         pass
-    elif user_choice == 4:
+    elif user_choice == '4':
         change_contact()
         pass
-    elif user_choice == 5:
+    elif user_choice == '5':
         delete_contact()
         pass
-    elif user_choice == 0:
+    elif user_choice == '0':
         saveIfEnd()
         eg.msgbox(msg="До свидания!")
         break
