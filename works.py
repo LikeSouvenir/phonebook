@@ -33,15 +33,10 @@ def all():
             
             
 # поиск номеров по имени 
-def find_number(name):
-    try:
-        pos = phonebook.get(name)
-        ph = "".join(map(str, pos.get('Телефон')))
-        bird = pos.get('День рождения')
-        mail = pos.get('Email')
-        print(f"Контакт - {name}\nТелефон - {ph}\nДень рождения - {bird}\nEmail - {mail}")
-    except:
-        print("Контакт не найден")
+def find_number():
+    name = eg.textbox(title= "Поиск контакта", msg="Введите искомое имя: ")
+    pos = phonebook.get(name)
+    eg.msgbox(msg = str(pos).replace('[', '').replace(']', '').replace("'", ""),title='Поиск контакта')
 
 # добавление контакта
 def add_phone_number(name, ph ,bird ,mail):
@@ -98,8 +93,7 @@ while True:
     if user_choice == 1:
         all()
     elif user_choice == 2:
-        name = input("Введите искомое имя: ")
-        find_number(name)
+        find_number()
     elif user_choice == 3:
         name = input("Введите имя: ")
         ph = int(input("Введите телефон: "))
